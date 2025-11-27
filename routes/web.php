@@ -36,7 +36,7 @@ Route::middleware("auth")->group(function () {
     });
 });
 
-Route::prefix("class/{id}")->group(function () {
+Route::middleware("author")->prefix("class/{id}")->group(function () {
     // Classroom Setting
     Route::get("/setting", [ClassroomController::class, "setting"])->name("setting");
     Route::put("/setting", [ClassroomController::class, "updateSetting"])->name("updateSetting");
