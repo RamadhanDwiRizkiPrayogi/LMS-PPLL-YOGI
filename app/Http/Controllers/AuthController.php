@@ -29,4 +29,25 @@ class AuthController extends Controller
             'email' => 'The provided credentials do not match our records.',
         ])->onlyInput('email');
     }
+        public function  store(Request $request)
+    {
+        $validation = $request->validate([
+            "firstname" => "required",
+            "lastname" => "required",
+            "email" => "required",
+            "password" => "required"
+        ]);
+
+        try {
+            $randomNumber = rand(1, 9);
+            $avatarPath = '/avatars/' . $randomNumber . '.png';
+
+            $validation['photo'] = $avatarPath;
+            User::create($validation);
+            return redirect()->back()->with("success", "Registrasi Berhasil");
+        } catch (\Throwable $th) {
+            return redirect()->back()->with("fail", "Registrasi Gagal");
+        }
+    }
+
 }
