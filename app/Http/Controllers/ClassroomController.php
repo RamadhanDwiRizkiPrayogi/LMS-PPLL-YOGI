@@ -47,4 +47,31 @@ class ClassroomController extends Controller
             return redirect()->back();
         }
     }
+
+    public function joinClass(Request $request)
+    {
+        $validation = $request->validate([
+            "code" => "required"
+        ]);
+
+        $user = Auth::user();
+        $classroom = Classroom::where("code", $request->code)->first();
+
+        if ($classroom) {
+            $alreadyJoined = MemberClass::where('user_id', Auth::id())
+                ->where('classroom_id', $classroom->id)
+                ->exists();
+            if (!$alreadyJoined) {
+                MemberClass::create([
+                    "user_id" => Auth::id(),
+                    "classroom_id" => $classroom->id
+                ]);
+                $this->generatePendingSubmissions($classroom, $user);
+                return redirect()->back();
+            }
+            return redirect()->back();
+        } else {
+            return redirect()->back();
+        }
+    }
 }
